@@ -1,16 +1,74 @@
-# React + Vite
+# Observatório da Jornada do Paciente Oncológico
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web interativa para visualizar o tempo de espera entre diagnóstico e início do tratamento oncológico no Brasil, com base em dados do Registro Hospitalar de Câncer (RHC).
 
-Currently, two official plugins are available:
+## O que a aplicação mostra
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Métricas nacionais** — média, mediana e percentual de casos acima do prazo legal de 60 dias (Lei nº 12.732/2012)
+- **Mapa do Brasil** — comparação do tempo médio de espera por unidade federativa
+- **Análise de desigualdades** — diferenças por sexo, raça/cor, escolaridade e tipo de tumor
+- **Filtros por perfil** — consulta personalizada combinando variáveis demográficas e clínicas
 
-## React Compiler
+## Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + Vite
+- Tailwind CSS 4
+- Recharts, d3-geo, topojson-client
+- PapaParse (pré-processamento de CSV)
 
-## Expanding the ESLint configuration
+## Como rodar
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+npm run dev
+```
+
+Build de produção:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Dados
+
+Os dados agregados usados pela interface estão em `public/data/`:
+
+| Arquivo | Descrição |
+|---------|-----------|
+| `aggregates.json` | Agregados nacionais e por UF |
+| `profiles.json` | Lookup por perfil demográfico/clínico |
+| `brazil-states.json` | Geometria dos estados (mapa) |
+
+O CSV bruto (`rhc.csv`) **não** está no repositório por exceder o limite de 100 MB do GitHub. Ele permanece local e é usado apenas no pré-processamento:
+
+```bash
+# Coloque public/data/rhc.csv localmente e rode:
+npm run preprocess
+```
+
+## Estrutura
+
+```
+src/
+  components/     # Mapa, métricas, filtros, análise de desigualdade
+  utils/          # Carregamento e processamento dos JSON
+scripts/
+  preprocess.js   # Gera aggregates.json e profiles.json a partir do CSV
+public/data/      # Dados consumidos em runtime
+TCC/              # Material do trabalho de conclusão
+```
+
+## Scripts
+
+| Comando | Função |
+|---------|--------|
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Build de produção |
+| `npm run preview` | Preview do build |
+| `npm run preprocess` | Regenera JSONs a partir do `rhc.csv` |
+| `npm run lint` | ESLint |
+
+## Licença
+
+Projeto acadêmico — uso restrito ao contexto do TCC.
