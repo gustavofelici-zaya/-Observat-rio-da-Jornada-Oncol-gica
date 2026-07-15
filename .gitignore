@@ -7,6 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies & build
 node_modules
 dist
 dist-ssr
@@ -22,6 +23,33 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.tmp
+*.bak
+*~
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# OS
+Thumbs.db
+Desktop.ini
 
 # Raw dataset (exceeds GitHub 100MB limit; used by scripts/preprocess.js)
 public/data/rhc.csv
+
+# TCC — documentos, figuras, PDF e apresentação (somente local)
+TCC/
+TCC.zip
+TCC_APRESENTACAO.md
+*.aux
+*.bbl
+*.blg
+*.toc
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk

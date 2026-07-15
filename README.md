@@ -56,8 +56,9 @@ src/
 scripts/
   preprocess.js   # Gera aggregates.json e profiles.json a partir do CSV
 public/data/      # Dados consumidos em runtime
-TCC/              # Material do trabalho de conclusão
 ```
+
+Material do TCC (`TCC/`, `TCC.zip`, apresentação) fica apenas local e está no `.gitignore`.
 
 ## Scripts
 
