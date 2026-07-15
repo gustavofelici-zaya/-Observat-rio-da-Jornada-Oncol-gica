@@ -1,0 +1,332 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --c-ink: #1a1a2e;
+  --c-ink-60: #5a5a7a;
+  --c-ink-30: #b0b0c8;
+  --c-ink-10: #f0f0f5;
+  --c-hope: #00a67c;
+  --c-hope-light: #e0f5ef;
+  --c-hope-deep: #006b52;
+  --c-alert: #e05c2a;
+  --c-alert-light: #fdf0e8;
+  --c-wait: #c8860a;
+  --c-wait-light: #fdf6e3;
+  --c-surface: #fafaf8;
+  --c-white: #ffffff;
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+}
+body { font-family: var(--font-body); background: var(--c-surface); color: var(--c-ink); padding: 2rem 1.5rem 4rem; max-width: 720px; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-ink-30); margin-bottom: 1rem; }
+.divider { border: none; border-top: 0.5px solid var(--c-ink-10); margin: 2.5rem 0; }
+.ds-header { margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 0.5px solid var(--c-ink-10); }
+.ds-header h1 { font-family: var(--font-display); font-size: 28px; color: var(--c-ink); line-height: 1.2; margin-bottom: 6px; }
+.ds-header h1 em { color: var(--c-hope); font-style: italic; }
+.ds-header p { font-size: 13px; color: var(--c-ink-60); line-height: 1.6; max-width: 480px; }
+.color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+.color-chip { border-radius: var(--r-md); overflow: hidden; border: 0.5px solid rgba(0,0,0,0.06); }
+.color-swatch { height: 60px; display: flex; align-items: flex-end; padding: 8px; }
+.color-swatch span { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; }
+.color-meta { background: var(--c-white); padding: 8px 10px; }
+.color-meta .name { font-size: 12px; font-weight: 600; color: var(--c-ink); }
+.color-meta .hex { font-size: 11px; color: var(--c-ink-60); font-family: monospace; }
+.color-meta .role { font-size: 10px; color: var(--c-ink-30); margin-top: 2px; }
+.type-row { margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--c-ink-10); }
+.type-row:last-child { border-bottom: none; }
+.type-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-ink-30); margin-bottom: 4px; }
+.t-hero { font-family: var(--font-display); font-size: 42px; line-height: 1.1; color: var(--c-ink); }
+.t-hero em { color: var(--c-hope); font-style: italic; }
+.t-title { font-family: var(--font-display); font-size: 24px; line-height: 1.3; color: var(--c-ink); }
+.t-eyebrow { font-family: var(--font-body); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-hope); }
+.t-body { font-family: var(--font-body); font-size: 15px; line-height: 1.7; color: var(--c-ink-60); max-width: 480px; }
+.t-stat-lg { font-family: var(--font-display); font-size: 52px; line-height: 1; color: var(--c-ink); }
+.t-stat-unit { font-family: var(--font-body); font-size: 16px; color: var(--c-ink-60); margin-left: 4px; }
+.t-caption { font-family: var(--font-body); font-size: 12px; color: var(--c-ink-30); }
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+.metric-card { background: var(--c-white); border: 0.5px solid rgba(0,0,0,0.08); border-radius: var(--r-lg); padding: 1.25rem; }
+.metric-card .eyebrow { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c-ink-30); margin-bottom: 8px; }
+.metric-card .value { font-family: var(--font-display); font-size: 38px; line-height: 1; color: var(--c-ink); margin-bottom: 4px; }
+.metric-card .value.alert { color: var(--c-alert); }
+.metric-card .value.hope { color: var(--c-hope); }
+.metric-card .label { font-size: 12px; color: var(--c-ink-60); }
+.metric-card .delta { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 600; margin-top: 6px; padding: 2px 8px; border-radius: 100px; }
+.delta.neg { background: var(--c-alert-light); color: var(--c-alert); }
+.delta.pos { background: var(--c-hope-light); color: var(--c-hope-deep); }
+.delta.warn { background: var(--c-wait-light); color: var(--c-wait); }
+.narrative-card { background: var(--c-ink); border-radius: var(--r-lg); padding: 1.5rem; margin-bottom: 12px; }
+.narrative-card .chapter { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c-hope); margin-bottom: 8px; }
+.narrative-card .headline { font-family: var(--font-display); font-size: 22px; color: var(--c-white); line-height: 1.3; margin-bottom: 8px; }
+.narrative-card .body { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+.tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+.tag { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 100px; }
+.tag.stage-1 { background: var(--c-hope-light); color: var(--c-hope-deep); }
+.tag.stage-2 { background: #e8f4fd; color: #1a5a8a; }
+.tag.stage-3 { background: var(--c-wait-light); color: #7a4d00; }
+.tag.stage-4 { background: var(--c-alert-light); color: #8a2a00; }
+.tag.neutral { background: var(--c-ink-10); color: var(--c-ink-60); }
+.progress-item { margin-bottom: 12px; }
+.progress-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.progress-header span:first-child { font-size: 13px; color: var(--c-ink-60); }
+.progress-header span:last-child { font-size: 13px; font-weight: 600; color: var(--c-ink); }
+.progress-track { height: 6px; background: var(--c-ink-10); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 100px; }
+.timeline { position: relative; padding-left: 20px; }
+.timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: var(--c-ink-10); }
+.tl-item { position: relative; margin-bottom: 16px; }
+.tl-dot { position: absolute; left: -17px; top: 4px; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--c-white); }
+.tl-date { font-size: 11px; color: var(--c-ink-30); margin-bottom: 2px; }
+.tl-event { font-size: 13px; font-weight: 500; color: var(--c-ink); }
+.tl-sub { font-size: 12px; color: var(--c-ink-60); }
+.badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: var(--r-sm); font-size: 12px; font-weight: 600; }
+.badge.hope { background: var(--c-hope-light); color: var(--c-hope-deep); }
+.badge.alert { background: var(--c-alert-light); color: var(--c-alert); }
+.badge.wait { background: var(--c-wait-light); color: #7a4d00; }
+.badge.neutral { background: var(--c-ink-10); color: var(--c-ink-60); }
+.narrative-flow { display: flex; gap: 8px; margin-top: 1rem; flex-wrap: wrap; }
+.nf-step { flex: 1; min-width: 120px; background: var(--c-white); border: 0.5px solid rgba(0,0,0,0.08); border-radius: var(--r-md); padding: 12px; }
+.nf-step .num { font-family: var(--font-display); font-size: 28px; color: var(--c-ink-10); line-height: 1; margin-bottom: 4px; }
+.nf-step .title { font-size: 12px; font-weight: 600; color: var(--c-ink); margin-bottom: 2px; }
+.nf-step .desc { font-size: 11px; color: var(--c-ink-60); line-height: 1.4; }
+.nf-step.active .num { color: var(--c-hope-light); }
+.nf-step.active { border-color: var(--c-hope); }
+</style>
+
+<h2 class="sr-only">Design System do Observatório da Jornada do Paciente Oncológico</h2>
+
+<div class="ds-header">
+  <p class="section-label">Design System v1.0</p>
+  <h1>Observatório da <em>Jornada</em><br>do Paciente Oncológico</h1>
+  <p>Um sistema visual que transforma dados hospitalares em narrativa humana — priorizando clareza, dignidade e impacto.</p>
+</div>
+
+<p class="section-label">01 — Paleta de cores</p>
+<div class="color-grid">
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#1a1a2e;"><span style="color:rgba(255,255,255,0.4)">Aa</span></div>
+    <div class="color-meta"><div class="name">Tinta</div><div class="hex">#1a1a2e</div><div class="role">Texto primário, fundo escuro</div></div>
+  </div>
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#00a67c;"><span style="color:rgba(255,255,255,0.5)">Aa</span></div>
+    <div class="color-meta"><div class="name">Esperança</div><div class="hex">#00a67c</div><div class="role">Ação principal, progresso</div></div>
+  </div>
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#e05c2a;"><span style="color:rgba(255,255,255,0.5)">Aa</span></div>
+    <div class="color-meta"><div class="name">Urgência</div><div class="hex">#e05c2a</div><div class="role">Atrasos críticos, alertas</div></div>
+  </div>
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#c8860a;"><span style="color:rgba(255,255,255,0.4)">Aa</span></div>
+    <div class="color-meta"><div class="name">Atenção</div><div class="hex">#c8860a</div><div class="role">Espera moderada, aviso</div></div>
+  </div>
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#b0b0c8;"><span style="color:white">Aa</span></div>
+    <div class="color-meta"><div class="name">Cinza</div><div class="hex">#b0b0c8</div><div class="role">Texto secundário, bordas</div></div>
+  </div>
+  <div class="color-chip">
+    <div class="color-swatch" style="background:#fafaf8; border-bottom: 0.5px solid #eee;"><span style="color:#ccc">Aa</span></div>
+    <div class="color-meta"><div class="name">Fundo</div><div class="hex">#fafaf8</div><div class="role">Superfície da página</div></div>
+  </div>
+</div>
+
+<div style="margin-bottom:1.5rem; padding:1rem; background:var(--c-white); border-radius:var(--r-md); border:0.5px solid rgba(0,0,0,0.06);">
+  <p class="type-label" style="margin-bottom:8px">Semântica das cores no dado</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+    <span class="badge hope">≤30 dias — dentro do prazo</span>
+    <span class="badge wait">31–60 dias — atenção</span>
+    <span class="badge alert">+60 dias — crítico</span>
+    <span class="badge neutral">sem tratamento</span>
+  </div>
+</div>
+
+<hr class="divider">
+
+<p class="section-label">02 — Tipografia</p>
+<div class="type-row">
+  <div class="type-label">Hero — DM Serif Display, 42px</div>
+  <div class="t-hero"><em>47</em> dias</div>
+  <div class="t-caption" style="margin-top:6px">média de espera entre diagnóstico e tratamento</div>
+</div>
+<div class="type-row">
+  <div class="type-label">Eyebrow — DM Sans, 11px, caps, verde</div>
+  <div class="t-eyebrow">Câncer de Mama · 2023</div>
+</div>
+<div class="type-row">
+  <div class="type-label">Título de seção — DM Serif Display, 24px</div>
+  <div class="t-title">Quem espera mais?</div>
+</div>
+<div class="type-row">
+  <div class="type-label">Corpo — DM Sans, 15px, cinza médio</div>
+  <div class="t-body">Pacientes com ensino fundamental incompleto aguardam, em média, 22 dias a mais pelo início do tratamento do que aqueles com nível superior.</div>
+</div>
+<div class="type-row">
+  <div class="type-label">Estatística grande — DM Serif Display, 52px</div>
+  <div style="display:flex;align-items:baseline;">
+    <span class="t-stat-lg">3.204</span>
+    <span class="t-stat-unit">casos</span>
+  </div>
+</div>
+
+<hr class="divider">
+
+<p class="section-label">03 — Componentes</p>
+<p class="type-label" style="margin-bottom:10px">Cards de métricas</p>
+<div class="comp-grid">
+  <div class="metric-card">
+    <div class="eyebrow">Tempo médio de espera</div>
+    <div class="value alert">47</div>
+    <div class="label">dias até o 1º tratamento</div>
+    <span class="delta neg">▲ +8 vs meta SUS</span>
+  </div>
+  <div class="metric-card">
+    <div class="eyebrow">Pacientes tratados</div>
+    <div class="value hope">3.204</div>
+    <div class="label">registros em 2023</div>
+    <span class="delta pos">▲ +12% vs 2022</span>
+  </div>
+  <div class="metric-card">
+    <div class="eyebrow">Diagnóstico tardio (III/IV)</div>
+    <div class="value alert">61%</div>
+    <div class="label">dos casos chegam avançados</div>
+    <span class="delta neg">alto impacto no prazo</span>
+  </div>
+  <div class="metric-card">
+    <div class="eyebrow">Cumpriram meta 60 dias</div>
+    <div class="value hope">58%</div>
+    <div class="label">dentro do prazo legal</div>
+    <span class="delta warn">▼ 42% fora do prazo</span>
+  </div>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Card narrativo</p>
+<div class="narrative-card">
+  <div class="chapter">A jornada começa aqui</div>
+  <div class="headline">Do diagnóstico ao tratamento:<br>cada dia importa</div>
+  <div class="body">No Brasil, a Lei nº 12.732/2012 garante o direito ao início do tratamento em até 60 dias. Este observatório mede se essa promessa está sendo cumprida — e para quem ela falha.</div>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Tags de estadiamento</p>
+<div class="tag-row">
+  <span class="tag stage-1">Estádio I</span>
+  <span class="tag stage-2">Estádio II</span>
+  <span class="tag stage-3">Estádio III</span>
+  <span class="tag stage-4">Estádio IV</span>
+  <span class="tag neutral">Ignorado</span>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Distribuição de espera</p>
+<div style="background:var(--c-white);border-radius:var(--r-md);padding:1rem;border:0.5px solid rgba(0,0,0,0.06);margin-bottom:1.5rem;">
+  <div class="progress-item">
+    <div class="progress-header"><span>Até 30 dias</span><span>32%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:32%;background:var(--c-hope);"></div></div>
+  </div>
+  <div class="progress-item">
+    <div class="progress-header"><span>31 a 60 dias</span><span>26%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:26%;background:var(--c-wait);"></div></div>
+  </div>
+  <div class="progress-item">
+    <div class="progress-header"><span>61 a 120 dias</span><span>24%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:24%;background:var(--c-alert);"></div></div>
+  </div>
+  <div class="progress-item" style="margin-bottom:0">
+    <div class="progress-header"><span>Acima de 120 dias</span><span>18%</span></div>
+    <div class="progress-track"><div class="progress-fill" style="width:18%;background:#c0392b;"></div></div>
+  </div>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Linha do tempo da jornada</p>
+<div style="background:var(--c-white);border-radius:var(--r-md);padding:1rem 1rem 1rem 1.25rem;border:0.5px solid rgba(0,0,0,0.06);margin-bottom:1.5rem;">
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--c-ink-30);"></div>
+      <div class="tl-date">Dia 0</div>
+      <div class="tl-event">Primeiro diagnóstico</div>
+      <div class="tl-sub">Laudo histopatológico confirmado</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--c-wait);"></div>
+      <div class="tl-date">Dia 18</div>
+      <div class="tl-event">1ª consulta no Hospital de Amor</div>
+      <div class="tl-sub">Triagem e estadiamento inicial</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--c-alert);"></div>
+      <div class="tl-date">Dia 47</div>
+      <div class="tl-event">Início do tratamento</div>
+      <div class="tl-sub">Quimioterapia ou cirurgia</div>
+    </div>
+  </div>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Filtros</p>
+<div style="margin-bottom:20px;display:flex;flex-wrap:wrap;gap:8px;">
+  <button style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);background:var(--c-ink);color:#ffffff;border:none;">Todos os tumores</button>
+  <button style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body);background:var(--c-white);color:var(--c-ink-60);border:0.5px solid rgba(0,0,0,0.12);">Mama</button>
+  <button style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body);background:var(--c-white);color:var(--c-ink-60);border:0.5px solid rgba(0,0,0,0.12);">Próstata</button>
+  <button style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body);background:var(--c-white);color:var(--c-ink-60);border:0.5px solid rgba(0,0,0,0.12);">Colo do útero</button>
+  <button style="padding:6px 14px;border-radius:100px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font-body);background:var(--c-white);color:var(--c-ink-60);border:0.5px solid rgba(0,0,0,0.12);">Pulmão</button>
+</div>
+
+<p class="type-label" style="margin-bottom:10px">Botões de ação</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;">
+  <button style="padding:9px 20px;border-radius:var(--r-md);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;border:none;background:#1a1a2e;color:#ffffff;letter-spacing:0.01em;">Explorar dados</button>
+  <button style="padding:9px 20px;border-radius:var(--r-md);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;border:none;background:#00a67c;color:#ffffff;letter-spacing:0.01em;">Ver no mapa</button>
+  <button style="padding:9px 20px;border-radius:var(--r-md);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;background:transparent;color:#1a1a2e;border:1px solid rgba(0,0,0,0.2);letter-spacing:0.01em;">Baixar relatório</button>
+</div>
+
+<hr class="divider">
+
+<p class="section-label">04 — Estrutura narrativa das telas</p>
+<div class="narrative-flow">
+  <div class="nf-step active">
+    <div class="num">01</div>
+    <div class="title">Contexto</div>
+    <div class="desc">O problema e a lei dos 60 dias</div>
+  </div>
+  <div class="nf-step">
+    <div class="num">02</div>
+    <div class="title">Panorama</div>
+    <div class="desc">Métricas gerais do hospital</div>
+  </div>
+  <div class="nf-step">
+    <div class="num">03</div>
+    <div class="title">Mapa</div>
+    <div class="desc">De onde vêm os pacientes</div>
+  </div>
+  <div class="nf-step">
+    <div class="num">04</div>
+    <div class="title">Desigualdade</div>
+    <div class="desc">Quem espera mais e por quê</div>
+  </div>
+  <div class="nf-step">
+    <div class="num">05</div>
+    <div class="title">Jornada</div>
+    <div class="desc">O perfil do paciente típico</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<p class="section-label">05 — Princípios de design</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+  <div style="padding:1rem;background:var(--c-white);border-radius:var(--r-md);border:0.5px solid rgba(0,0,0,0.06);">
+    <div style="font-size:12px;font-weight:600;color:var(--c-ink);margin-bottom:4px;">Dignidade antes de dado</div>
+    <div style="font-size:12px;color:var(--c-ink-60);line-height:1.5;">Cada número representa uma pessoa. Linguagem acessível, sem jargão clínico.</div>
+  </div>
+  <div style="padding:1rem;background:var(--c-white);border-radius:var(--r-md);border:0.5px solid rgba(0,0,0,0.06);">
+    <div style="font-size:12px;font-weight:600;color:var(--c-ink);margin-bottom:4px;">Cor com propósito</div>
+    <div style="font-size:12px;color:var(--c-ink-60);line-height:1.5;">Verde = dentro do prazo. Laranja = atenção. Vermelho = crítico. Consistente em todo o sistema.</div>
+  </div>
+  <div style="padding:1rem;background:var(--c-white);border-radius:var(--r-md);border:0.5px solid rgba(0,0,0,0.06);">
+    <div style="font-size:12px;font-weight:600;color:var(--c-ink);margin-bottom:4px;">Número grande, contexto pequeno</div>
+    <div style="font-size:12px;color:var(--c-ink-60);line-height:1.5;">A métrica central é sempre a maior coisa na tela. O texto explica o significado.</div>
+  </div>
+  <div style="padding:1rem;background:var(--c-white);border-radius:var(--r-md);border:0.5px solid rgba(0,0,0,0.06);">
+    <div style="font-size:12px;font-weight:600;color:var(--c-ink);margin-bottom:4px;">Editorial, não técnico</div>
+    <div style="font-size:12px;color:var(--c-ink-60);line-height:1.5;">Serif para impacto emocional. Sans-serif para informação. Espaço vazio como respiração.</div>
+  </div>
+</div>

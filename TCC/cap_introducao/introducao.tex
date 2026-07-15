@@ -1,0 +1,57 @@
+\chapter[Introdução]{Introdução}
+\label{cap:introducao}
+
+Este Relatório Técnico Profissional foi desenvolvido no âmbito do curso de Bacharelado em Sistemas de Informação da Universidade Federal de Uberlândia, com o intuito de aplicar conhecimentos de engenharia de software, visualização de informação e dados públicos à construção de uma solução técnica real: o \textit{Observatório da Jornada do Paciente Oncológico}. Trata-se de uma plataforma web pública destinada a disponibilizar, de forma compreensível, indicadores derivados de registros oficiais sobre o tempo entre o diagnóstico de câncer e o início do tratamento no \acs{SUS}.
+
+\section{Contextualização do trabalho}
+
+No Brasil, a Lei nº~12.732/2012 estabelece que o paciente com neoplasia maligna tem direito a iniciar o tratamento no \acs{SUS} em prazo máximo de sessenta dias a partir do diagnóstico \cite{lei12732}. Paralelamente, o \acs{INCA} mantém o \acs{IRHC} (também referido como \acs{RHC}), base de dados hospitalares que registra informações clínicas e sociodemográficas de~pacientes oncológicos \cite{inca_irhc}.
+
+Embora esses dados existam e sejam de interesse público, sua forma bruta --- tipicamente arquivos volumosos em \acs{CSV}, com campos codificados e necessidade de tratamento estatístico --- dificulta o acesso por gestores, profissionais de saúde, pesquisadores e cidadãos sem formação específica em análise de dados. A ausência de uma interface pública, estável e orientada à exploração dificulta o uso desses registros como instrumento de transparência e de apoio à análise.
+
+Nesse contexto, o presente trabalho propõe uma plataforma de visualização que:
+\begin{itemize}
+	\item centraliza indicadores pré-agregados a partir do \acs{IRHC};
+	\item apresenta o tempo de espera em linguagem acessível, com referência ao prazo legal de sessenta dias como marco normativo de comparação;
+	\item oferece recortes geográficos, sociodemográficos e clínicos para que o usuário explore os dados;
+	\item capacita o leitor a formular suas próprias interpretações a partir dos indicadores apresentados.
+\end{itemize}
+
+A solução foi concebida para publicação pública, podendo ser utilizada tanto por órgãos e gestores interessados em acompanhar indicadores quanto por qualquer cidadão que deseje conhecer o panorama descrito pelos dados oficiais.
+
+\section{Objetivos Profissionais}
+
+\subsection{Objetivo geral}
+
+Desenvolver e documentar uma plataforma web pública que disponibilize a exploração de indicadores de tempo entre diagnóstico e início do tratamento oncológico, com base em dados do \acs{IRHC}/\acs{INCA}, de modo a ampliar o acesso à informação para governo e sociedade e a apoiar análises conduzidas pelos próprios usuários.
+
+\subsection{Objetivos específicos}
+
+\begin{itemize}
+	\item Levantar requisitos de transparência e usabilidade para uma interface pública de exploração de dados de saúde.
+	\item Definir regras de cálculo do tempo de espera e critérios de exclusão de registros com datas inválidas.
+	\item Implementar um pipeline de pré-processamento capaz de transformar o \acs{CSV} do \acs{RHC} em agregados \acs{JSON} adequados ao consumo no navegador.
+	\item Construir a interface em React com painéis de indicadores, mapa por Unidade da Federação, recortes por variáveis e filtros de perfil.
+	\item Validar funcionalmente a aplicação e documentar limitações metodológicas dos dados e da solução.
+\end{itemize}
+
+\section{Contribuições Esperadas}
+
+As principais contribuições deste Relatório Técnico Profissional incluem:
+
+\begin{itemize}
+	\item A entrega de um produto técnico funcional --- aplicação web estática --- apto a ser publicado sem necessidade de backend ou autenticação.
+	\item A sistematização de um pipeline reproduzível de agregação de dados do \acs{IRHC} para visualização interativa.
+	\item A demonstração da aplicabilidade de conhecimentos de Sistemas de Informação (arquitetura front-end, engenharia de dados leve e design de interfaces) a um problema de interesse público.
+	\item A disponibilização de um instrumento de análise exploratória que preserva a autonomia interpretativa do usuário.
+\end{itemize}
+
+\section{Organização do Relatório}
+
+Este relatório está estruturado em quatro capítulos textuais, além dos elementos pré e pós-textuais. O Capítulo~\ref{cap:fundamentacao} apresenta a fundamentação técnica e o contexto das tecnologias e conceitos utilizados. O Capítulo~\ref{estudo} detalha a metodologia de desenvolvimento, a arquitetura, os módulos implementados, os testes e o cronograma. O Capítulo~\ref{cap:conclusao} reúne considerações finais, limitações e perspectivas futuras.
+
+\section{IA-Generativa}
+
+De acordo com o Código de Conduta para pessoas autoras de publicações da Sociedade Brasileira de Computação (SBC), Parte II, Art. 2º, inciso III, o uso de Inteligência Artificial Generativa deve ser declarado explicitamente no trabalho \cite{sbc_conduta}.
+
+Neste relatório, ferramentas de IA generativa foram empregadas como apoio à redação e à organização do texto em \LaTeX{}, a partir da análise do código-fonte da aplicação. O autor permanece integralmente responsável pelo conteúdo, pela veracidade das informações técnicas e pela revisão final.

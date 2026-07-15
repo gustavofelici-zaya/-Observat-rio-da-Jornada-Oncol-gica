@@ -1,0 +1,128 @@
+\chapter[Contexto e Fundamentação Técnica]{Contexto e Fundamentação Técnica}
+\label{cap:fundamentacao}
+
+Este capítulo apresenta o ambiente de aplicação do trabalho, as tecnologias adotadas e os conceitos que embasam a solução. O foco é fundamentar as escolhas técnicas que permitiram construir uma plataforma pública de exploração de dados do \acs{IRHC}, com ênfase em transparência e em comunicação de indicadores que favoreça a análise autônoma pelo usuário.
+
+\section{Ambiente de Atuação}
+
+O projeto foi desenvolvido no contexto acadêmico do curso de Sistemas de Informação, com aplicação prática voltada ao domínio da saúde pública e da transparência de dados. Não se trata de um sistema interno de uma organização privada, mas de uma solução pensada para disponibilização pública a gestores, profissionais, pesquisadores e cidadãos.
+
+A demanda prática identificada foi a dificuldade de acesso e interpretação dos registros do \acs{IRHC} em sua forma bruta. O volume de dados --- da ordem de milhões de linhas --- e a necessidade de tratamento (validação de datas, agregações e mapeamento de códigos) tornam o uso direto do arquivo \acs{CSV} pouco viável para o público geral. A plataforma proposta atua, portanto, como camada de apresentação e exploração sobre agregados pré-calculados.
+
+\subsection{Atribuições do aluno}
+
+O aluno foi responsável pelo ciclo completo da solução técnica, incluindo:
+\begin{itemize}
+	\item definição das regras de cálculo do tempo de espera e dos critérios de exclusão;
+	\item implementação do script de pré-processamento em Node.js;
+	\item desenvolvimento da interface React (layout, componentes de visualização e filtros);
+	\item integração dos arquivos \acs{JSON} estáticos à aplicação;
+	\item validação funcional e documentação do trabalho.
+\end{itemize}
+
+\section{Marco normativo e fonte de dados}
+
+Segundo \citeonline{lei12732}, a Lei nº~12.732/2012 estabelece o prazo máximo de sessenta dias para o início do tratamento oncológico no \acs{SUS} após o diagnóstico. No Observatório, esse prazo é utilizado como \textbf{referência normativa de comparação} nos indicadores (por exemplo, percentual de casos com tempo superior a sessenta dias), e não como veredito sobre a qualidade do sistema de saúde. A referência completa da lei consta na seção de Referências deste relatório.
+
+A fonte de dados é o \acs{IRHC}/\acs{RHC} disponibilizado pelo \acs{INCA} \cite{inca_irhc}. Os registros hospitalares incluem, entre outros campos, datas de diagnóstico e de início de tratamento, Unidade da Federação de residência, sexo, raça/cor, escolaridade, estadiamento e localização do tumor. A plataforma não altera os microdados originais: ela agrega e apresenta estatísticas derivadas, com exclusão explícita de registros sem datas válidas para o cálculo do intervalo.
+
+\section{Ferramentas e Tecnologias Adotadas}
+
+As tecnologias foram selecionadas com base em maturidade, documentação, adequação a uma aplicação estática pública e curva de aprendizado compatível com o prazo do trabalho. A Tabela~\ref{tab:tecnologias} resume o conjunto adotado; as documentações oficiais de React, Vite, Recharts e D3 embasam as escolhas \cite{react_docs,vite_docs,recharts_docs,d3_docs}.
+
+\begin{table}[H]
+\centering
+\caption{Tecnologias adotadas no projeto}
+\label{tab:tecnologias}
+\begin{tabularx}{\textwidth}{|l|l|X|X|}
+\hline
+\textbf{Tecnologia} & \textbf{Tipo} & \textbf{Finalidade} & \textbf{Justificativa} \\
+\hline
+React 19 & Biblioteca de \acs{UI} & Interface interativa baseada em componentes & Ecossistema consolidado e adequado a \acs{SPA} \\
+\hline
+Vite & Empacotador / \textit{dev server} & Desenvolvimento e build estático & Build rápido e publicação sem servidor de aplicação \\
+\hline
+Node.js & Runtime & Pré-processamento do \acs{CSV} & Streaming de arquivos grandes e geração de \acs{JSON} \\
+\hline
+Recharts & Biblioteca de gráficos & Séries temporais e distribuições & Integração nativa com React \\
+\hline
+d3-geo & Cartografia & Projeção e desenho do mapa do Brasil & Controle fino de \acs{SVG} geográfico \\
+\hline
+Tailwind CSS & Estilização & Tokens e utilitários de layout & Consistência visual e produtividade \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Arquitetura baseada em componentes e SPA estática}
+
+O React organiza a interface em componentes reutilizáveis, com estado local e composição hierárquica \cite{react_docs}. A aplicação do Observatório é uma \acs{SPA}: uma única página com navegação por âncoras (\texttt{\#lei}, \texttt{\#mapa}, \texttt{\#desigualdade}, \texttt{\#explore}, entre outras), sem roteador client-side dedicado. Na prática, o usuário carrega um conjunto de arquivos estáticos (HTML, JavaScript, CSS e \acs{JSON}) e interage com a interface sem novas requisições a um servidor de aplicação.
+
+A decisão de publicar a aplicação como site estático (build Vite) elimina a necessidade de backend, autenticação e banco de dados em tempo de execução. Os dados já agregados são servidos como arquivos em \texttt{public/data/} e carregados via \texttt{fetch} no navegador.
+
+Entre os \textbf{benefícios} dessa abordagem no contexto do projeto, destacam-se:
+\begin{itemize}
+	\item facilidade de \textit{deploy} em qualquer hospedagem de arquivos estáticos (incluindo portais institucionais);
+	\item redução da superfície de ataque, por não expor APIs autenticadas nem banco de dados online;
+	\item transparência: os artefatos de dados e o código da interface podem ser inspecionados e republicados;
+	\item custo operacional baixo, adequado a uma iniciativa de acesso público à informação.
+\end{itemize}
+
+Entre as \textbf{limitações}, destacam-se:
+\begin{itemize}
+	\item necessidade de pré-processamento offline sempre que a base \acs{CSV} for atualizada;
+	\item ausência de personalização por usuário logado ou de gravação de preferências no servidor;
+	\item escalabilidade de leitura limitada principalmente pela capacidade da rede e do navegador ao carregar os \acs{JSON}, e não por um backend elástico.
+\end{itemize}
+
+\section{Visualização de informação}
+
+A visualização de informação busca mapear dados abstratos em representações gráficas que apoiem a percepção de padrões, sem substituir o julgamento do analista \cite{few2009}. No Observatório, foram adotados:
+
+\begin{itemize}
+	\item gráficos de barras, linhas e áreas (Recharts) para tendências anuais, distribuição de espera e estadiamento;
+	\item mapa coroplético (\acs{SVG} com d3-geo) para comparação entre Unidades da Federação;
+	\item tabelas e cartões de \acs{KPI} para médias, medianas e percentuais em relação ao prazo de sessenta dias;
+	\item filtros de perfil para exploração combinada de variáveis.
+\end{itemize}
+
+A paleta semântica da interface (tons associados a faixas de tempo de espera) auxilia a leitura rápida dos indicadores, mas os rótulos e textos explicativos enfatizam que se trata de comparação com o marco legal, cabendo ao usuário a interpretação dos resultados.
+
+\section{Pré-processamento e agregação offline}
+
+Arquivos \acs{CSV} com mais de um milhão de linhas são inadequados para parsing completo no navegador em dispositivos comuns. Por isso, adotou-se um pipeline offline: um script Node.js lê o \acs{CSV} (codificação latin1), valida datas, calcula o intervalo em dias e grava agregados em \acs{JSON} (\texttt{aggregates.json} e \texttt{profiles.json}).
+
+Essa estratégia separa a camada de preparação de dados da camada de apresentação, alinhando-se a boas práticas de engenharia de software em que transformações custosas ocorrem fora do caminho crítico da interface \cite{sommerville2011}.
+
+\section{Restrições Técnicas e Operacionais}
+
+As restrições a seguir influenciaram diretamente o escopo e as decisões de projeto:
+
+\begin{enumerate}
+	\item \textbf{Publicação sem backend:} a solução deveria ser hospedável como site estático, sem servidor de aplicação, autenticação ou banco de dados em produção.
+	\item \textbf{Volume do \acs{CSV} do \acs{RHC}:} o arquivo original (centenas de megabytes e mais de um milhão de linhas) inviabiliza o processamento integral no cliente, impondo o pipeline de pré-agregação.
+	\item \textbf{Qualidade e completude dos campos:} datas ausentes ou inválidas e categorias ``ignorado'' reduzem a cobertura de alguns indicadores e exigem comunicação explícita na interface.
+	\item \textbf{Cobertura hospitalar do registro:} o \acs{IRHC} não representa, necessariamente, toda a população oncológica do país, o que limita generalizações.
+	\item \textbf{Prazo acadêmico e recursos:} o desenvolvimento concentrou-se em uma \acs{SPA} com visualizações essenciais, sem API programática nem drill-down municipal na primeira versão.
+	\item \textbf{Comunicação dos indicadores:} os textos da interface e do relatório devem capacitar a análise pelo usuário, sem induzir conclusões causais a partir de recortes exploratórios.
+\end{enumerate}
+
+\section{Padrões e Boas Práticas Adotadas}
+
+\begin{itemize}
+	\item Separação entre pré-processamento (Node.js) e apresentação (React);
+	\item Componentização da interface (\texttt{MetricsPanel}, \texttt{BrazilMap}, análise por variáveis, \texttt{SmartFilters});
+	\item Estado local com React Hooks, sem biblioteca global de estado, dada a simplicidade do fluxo de dados;
+	\item Documentação inline da metodologia na própria interface (seções de metodologia e sobre);
+	\item Linguagem orientada à exploração, descrevendo \textit{como} utilizar os recortes e \textit{quais} indicadores são exibidos.
+\end{itemize}
+
+\section{Justificativa das Escolhas Tecnológicas}
+
+Os critérios principais foram:
+
+\begin{itemize}
+	\item \textbf{Publicação pública:} stack estática reduz barreira de hospedagem para governo ou sociedade civil;
+	\item \textbf{Curva de aprendizado e documentação:} React, Vite e Recharts possuem documentação oficial ampla \cite{react_docs,vite_docs,recharts_docs};
+	\item \textbf{Desempenho percebido:} agregação offline evita travamentos no navegador;
+	\item \textbf{Manutenibilidade:} módulos com responsabilidade clara facilitam evolução futura (por exemplo, novos recortes ou drill-down por município).
+\end{itemize}

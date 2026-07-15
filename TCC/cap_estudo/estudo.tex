@@ -1,0 +1,219 @@
+\chapter[Estudo de Caso da Solução Técnica]{Estudo de Caso da Solução Técnica}
+\label{estudo}
+
+Este capítulo apresenta a abordagem metodológica e a arquitetura técnica adotadas no desenvolvimento do Observatório da Jornada do Paciente Oncológico. O objetivo é documentar o processo de trabalho, as decisões de implementação e os critérios utilizados para validar a solução como plataforma pública de exploração de dados.
+
+Entende-se como solução técnica desenvolvida, neste contexto, a criação de uma aplicação web de visualização e exploração de indicadores derivados do \acs{IRHC}, incluindo o pipeline de pré-processamento de dados e a interface interativa publicada de forma estática.
+
+\section{Estratégia de Desenvolvimento}
+
+A estratégia utilizada foi iterativo-incremental, com entregas parciais ao longo do ciclo de desenvolvimento. O trabalho combinou práticas de engenharia de software e elementos típicos de projetos de dados:
+
+\begin{itemize}
+	\item organização em ciclos curtos de implementação e revisão da interface;
+	\item ciclo de vida em camadas: compreensão do problema, preparação dos dados, implementação da \acs{UI}, validação e documentação;
+	\item inspiração no \acs{CRISP-DM} para a etapa de dados (compreensão da base, preparação, avaliação da qualidade dos agregados e ``implantação'' via build estático) \cite{crispdm}.
+\end{itemize}
+
+A premissa editorial --- disponibilizar informação para que o usuário conduza a própria análise --- foi tratada como requisito transversal: textos, rótulos e seções de metodologia foram revisados para privilegiar a clareza descritiva dos indicadores.
+
+\section{Arquitetura da Solução}
+
+A arquitetura é deliberadamente simples e adequada a uma publicação pública sem servidor de aplicação. A Figura~\ref{fig:arquitetura} ilustra o fluxo completo, da base hospitalar à interface publicada.
+
+\begin{figure}[H]
+\centering
+% Autor: substituir o quadro abaixo por \includegraphics[width=0.9\textwidth]{figs/arquitetura.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.2em}
+\textit{Inserir diagrama do fluxo:}\\
+\texttt{rhc.csv} $\rightarrow$ \texttt{scripts/preprocess.js} $\rightarrow$ \texttt{aggregates.json} / \texttt{profiles.json} $\rightarrow$ React (\texttt{App.jsx} + componentes) $\rightarrow$ build Vite estático.\\[0.4em]
+\vspace{1.2em}}}
+\caption{Fluxo de dados da solução: do arquivo CSV do RHC ao build estático da aplicação}
+\label{fig:arquitetura}
+\end{figure}
+
+Os principais elementos são:
+
+\begin{itemize}
+	\item \textbf{Camada de preparação de dados:} script Node.js (\texttt{scripts/preprocess.js}) que lê o \acs{CSV} do \acs{RHC}, valida datas, calcula o tempo de espera e gera agregados;
+	\item \textbf{Camada de dados estáticos:} arquivos em \texttt{public/data/} (\texttt{aggregates.json}, \texttt{profiles.json}, \texttt{brazil-states.json});
+	\item \textbf{Camada de apresentação:} aplicação React 19 empacotada com Vite, carregada no navegador;
+	\item \textbf{Ausência de persistência online e de autenticação:} todos os usuários acessam o mesmo conteúdo público.
+\end{itemize}
+
+\subsection{Regra de cálculo do tempo de espera}
+
+O indicador central é o número de dias entre a data de diagnóstico (\texttt{DTDIAGNO}) e a data de início do tratamento (\texttt{DATAINITRT}). São considerados válidos apenas intervalos entre 0 e 3.650 dias (dez anos). Datas vazias, sentinelas do tipo \texttt{00/00/0000} ou não interpretáveis no formato dia/mês/ano são excluídas do cálculo.
+
+A partir dos casos válidos, calculam-se média, mediana (via histograma), percentuais acima de 30 e de 60 dias, distribuições por faixas, agregações por Unidade da Federação, ano, escolaridade, raça/cor, sexo, estadiamento e grupo de tumor, além de perfis combinados para o módulo de exploração.
+
+Na base processada para a versão documentada neste relatório, foram obtidos \textbf{1.693.381} registros totais e \textbf{1.258.486} com tempo de espera calculável. A média observada foi de \textbf{135} dias e a mediana de \textbf{68} dias; aproximadamente \textbf{54\%} dos casos válidos apresentaram tempo superior a 60 dias. Esses números são descritivos da base agregada e devem ser interpretados à luz das limitações metodológicas (cobertura hospitalar, exclusões e possíveis fatores de confusão).
+
+\section{Componentes e Módulos Implementados}
+
+A interface é uma página única organizada em seções. Os principais módulos são descritos a seguir. As Figuras~\ref{fig:hero} a~\ref{fig:explore} correspondem a capturas de tela da aplicação em execução; o autor deve substituir os quadros reservados pelas imagens finais em \texttt{figs/}.
+
+\subsection{Shell da aplicação (\texttt{App.jsx})}
+
+Responsável pelo carregamento dos dados (\texttt{loadAndProcess}), pelo estado do perfil de filtros, pela navegação por âncoras e pela composição das seções narrativas (hero, lei, mapa, recortes, explore, metodologia e sobre).
+
+\begin{figure}[H]
+\centering
+% Autor: \includegraphics[width=0.9\textwidth]{figs/hero.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.5em}
+\textit{Inserir captura da tela inicial (hero), com o título da aplicação e os indicadores globais de tempo médio e percentual acima de 60 dias.}\\[0.3em]
+\vspace{1.5em}}}
+\caption{Tela inicial do Observatório, com indicadores globais de tempo de espera}
+\label{fig:hero}
+\end{figure}
+
+\subsection{Painel de indicadores (\texttt{MetricsPanel.jsx})}
+
+Apresenta a comparação com o prazo legal de 60 dias, cartões de \acs{KPI}, distribuição do tempo de espera e gráficos de tendência anual, estadiamento e volume de casos (Recharts).
+
+\begin{figure}[H]
+\centering
+% Autor: \includegraphics[width=0.9\textwidth]{figs/metrics.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.5em}
+\textit{Inserir captura da seção de indicadores (MetricsPanel), com a referência de 60 dias, KPIs e gráficos de tendência.}\\[0.3em]
+\vspace{1.5em}}}
+\caption{Painel de indicadores em relação ao prazo legal de sessenta dias}
+\label{fig:metrics}
+\end{figure}
+
+\subsection{Mapa do Brasil (\texttt{BrazilMap.jsx})}
+
+Renderiza um mapa coroplético das Unidades da Federação a partir de GeoJSON, com escala de cores associada ao tempo médio de espera, \textit{tooltip} e ranking lateral. Estados com amostra insuficiente são tratados conforme regras de contagem mínima definidas no pré-processamento.
+
+\begin{figure}[H]
+\centering
+% Autor: \includegraphics[width=0.9\textwidth]{figs/mapa.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.5em}
+\textit{Inserir captura do mapa coroplético por UF e do ranking lateral de estados.}\\[0.3em]
+\vspace{1.5em}}}
+\caption{Mapa coroplético do tempo médio de espera por Unidade da Federação}
+\label{fig:mapa}
+\end{figure}
+
+\subsection{Exploração por variáveis sociodemográficas e clínicas}
+
+O componente de análise por variáveis (arquivo \texttt{InequalityAnalysis.jsx} no código) apresenta tabelas e gráficos que permitem ao usuário \textbf{comparar} indicadores entre categorias de escolaridade, raça/cor e tipo de tumor, além de cruzamentos auxiliares (por exemplo, distribuição de tumores e estadiamento). A interface inclui notas sobre possíveis fatores de confusão e percentuais de informação ignorada, para que a leitura permaneça cautelosa. O texto da aplicação e deste relatório disponibilizam instrumentos para que o leitor conduza a própria análise dos padrões observados.
+
+\begin{figure}[H]
+\centering
+% Autor: \includegraphics[width=0.9\textwidth]{figs/recortes.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.5em}
+\textit{Inserir captura da seção de recortes por escolaridade, raça/cor e tipo de tumor.}\\[0.3em]
+\vspace{1.5em}}}
+\caption{Recortes exploratórios por variáveis sociodemográficas e clínicas}
+\label{fig:recortes}
+\end{figure}
+
+\subsection{Filtros de perfil (\texttt{SmartFilters.jsx})}
+
+Permite combinar sexo, raça/cor, escolaridade e grupo de tumor. Os resultados são obtidos por busca em \texttt{profiles.json} (chave \texttt{sexo|raca|instruc|tumor}), exibindo média, mediana e percentual acima de 60 dias em comparação com a linha de base global. O mesmo componente opera na seção ``Explore'' e em um drawer de filtros no cabeçalho.
+
+\begin{figure}[H]
+\centering
+% Autor: \includegraphics[width=0.9\textwidth]{figs/explore.png}
+\fbox{\parbox{0.92\textwidth}{\centering\vspace{1.5em}
+\textit{Inserir captura da seção Explore com filtros de perfil selecionados e indicadores do subconjunto.}\\[0.3em]
+\vspace{1.5em}}}
+\caption{Exploração por perfil combinado (sexo, raça/cor, escolaridade e tipo de tumor)}
+\label{fig:explore}
+\end{figure}
+
+\subsection{Utilitário de carga (\texttt{processData.js})}
+
+Centraliza o carregamento de \texttt{aggregates.json} e \texttt{profiles.json}, além de mapas de rótulos (sexo, raça/cor, escolaridade, estadiamento) usados na interface.
+
+\section{Testes Realizados}
+
+Não foi implementada uma suíte automatizada de testes unitários ou de ponta a ponta (por exemplo, Jest ou Cypress). A validação concentrou-se em procedimentos manuais e de engenharia, descritos a seguir.
+
+\subsection{Validação do pré-processamento}
+
+Após cada execução de \texttt{node scripts/preprocess.js}, foram conferidos:
+\begin{itemize}
+	\item totais de registros (\texttt{totalCases}) e de casos com espera válida (\texttt{totalWithWait});
+	\item média e mediana de dias, bem como percentuais acima de 30 e de 60 dias;
+	\item coerência das agregações por UF, ano, escolaridade, raça/cor e tumor com as regras de exclusão de datas.
+\end{itemize}
+Como resultado, a versão documentada neste relatório consolidou 1.693.381 registros processados e 1.258.486 com tempo calculável, sem inconsistências aparentes entre as regras do script e os valores gravados em \texttt{aggregates.json}.
+
+\subsection{Testes funcionais da interface}
+
+Foram exercitados, em navegador desktop:
+\begin{itemize}
+	\item navegação por âncoras entre as seções da página;
+	\item abertura e fechamento do drawer de filtros;
+	\item seleção de perfis no \texttt{SmartFilters} e atualização dos indicadores exibidos;
+	\item renderização do mapa (incluindo \textit{tooltip}) e dos gráficos Recharts;
+	\item leitura das seções de metodologia e sobre, quanto à clareza das limitações.
+\end{itemize}
+Não foram observados erros de carregamento dos \acs{JSON} nem falhas de renderização nas seções principais durante as rodadas de verificação.
+
+\subsection{Teste de build e empacotamento}
+
+A execução de \texttt{npm run build} (Vite) foi utilizada para verificar a geração do diretório \texttt{dist/} com os assets estáticos. O build concluiu sem erros, confirmando que a aplicação pode ser publicada sem servidor de aplicação.
+
+\subsection{Revisão editorial da interface}
+
+Além dos aspectos funcionais, os textos da \acs{UI} foram revisados para privilegiar formulações que descrevem indicadores e convidam à exploração, em vez de afirmações conclusivas sobre padrões sociais.
+
+\section{Critérios e Métricas de Avaliação}
+
+A avaliação da solução considerou critérios alinhados a uma plataforma pública de exploração de dados, conforme a Tabela~\ref{tab:metricas}.
+
+\begin{table}[H]
+\centering
+\caption{Critérios e métricas para avaliação da solução}
+\label{tab:metricas}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+Critério & Métrica / evidência \\
+\hline
+Corretude das agregações & Consistência entre regras do preprocess e valores em \texttt{aggregates.json} \\
+\hline
+Desempenho percebido & Carregamento dos \acs{JSON} e fluidez da \acs{SPA} em navegador desktop \\
+\hline
+Usabilidade exploratória & Capacidade de obter indicadores globais e por recorte sem treinamento formal \\
+\hline
+Publicabilidade & Build estático sem dependência de backend ou autenticação \\
+\hline
+Transparência metodológica & Presença de seções de metodologia/limitações na própria aplicação \\
+\hline
+Clareza editorial & Textos de apoio orientados à exploração e à autonomia interpretativa do usuário \\
+\hline
+\end{tabularx}
+\end{table}
+
+\section{Cronograma de Execução de Atividades}
+
+O cronograma da Tabela~\ref{tab:cronograma} resume a organização temporal das principais fases, em horizonte semestral típico de um Relatório Técnico Profissional.
+
+\begin{table}[H]
+\centering
+\caption{Cronograma resumido de atividades do projeto}
+\label{tab:cronograma}
+\scriptsize
+\begin{tabularx}{\textwidth}{|l|c|c|c|c|c|c|}
+\hline
+\textbf{Atividade} & \textbf{Mês 1} & \textbf{Mês 2} & \textbf{Mês 3} & \textbf{Mês 4} & \textbf{Mês 5} & \textbf{Mês 6} \\
+\hline
+Levantamento do problema e da base IRHC & X & & & & & \\
+\hline
+Definição de regras e pipeline de dados & X & X & & & & \\
+\hline
+Implementação da interface React & & X & X & X & & \\
+\hline
+Mapa, recortes e filtros de perfil & & & X & X & & \\
+\hline
+Validação funcional e ajustes editoriais & & & & X & X & \\
+\hline
+Documentação do RTP / TCC & & & & & X & X \\
+\hline
+\end{tabularx}
+\end{table}
+
+Esse cronograma pode ser ajustado conforme prazos institucionais e orientações da banca, mantendo a sequência lógica dados $\rightarrow$ interface $\rightarrow$ validação $\rightarrow$ documentação.

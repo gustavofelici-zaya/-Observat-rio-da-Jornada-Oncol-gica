@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+:root {
+  /* ── Design System: Observatório da Jornada Oncológica ── */
+  --c-ink:        #1a1a2e;
+  --c-ink-60:     #5a5a7a;
+  --c-ink-30:     #b0b0c8;
+  --c-ink-10:     #f0f0f5;
+  --c-hope:       #00a67c;
+  --c-hope-light: #e0f5ef;
+  --c-hope-deep:  #006b52;
+  --c-alert:      #e05c2a;
+  --c-alert-light:#fdf0e8;
+  --c-wait:       #c8860a;
+  --c-wait-light: #fdf6e3;
+  --c-surface:    #fafaf8;
+  --c-white:      #ffffff;
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--c-surface);
+  color: var(--c-ink);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
+h1, h2, h3 { margin: 0; }
+p { margin: 0; }
+
+code,
+.counter {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 4px;
+  color: var(--text-h);
+}
+
+code {
+  font-size: 15px;
+  line-height: 135%;
+  padding: 4px 8px;
+  background: var(--code-bg);
+}

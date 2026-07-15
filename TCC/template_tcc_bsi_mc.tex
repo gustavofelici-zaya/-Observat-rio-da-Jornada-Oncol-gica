@@ -1,0 +1,307 @@
+% main_bsiMC_ufu.tex v1.1, Thiago Pirola Ribeiro
+% adaptado do modelo PPGCO - main_ppgco_ufu.tex v1.0, Lásaro Camargos e Denise Guliato
+% Criacao: 2019-03-08 - v1.0
+% ------------------------------------------------------------------------
+% Atualizações.
+% 2022-10-18 - v1.1 - Thiago Pirola Ribeiro
+% 2025-05-22 - V1.2 - Diego Nunes Molinos
+% 2025-09-05 - V1.2 - Diego Nunes Molinos
+%                    - Inclusão do texto IA-Generativa
+%                    - Retirada dos tópicos opcionais
+%                    - Inclusão do texto Observação em vermelho
+% 2025-03-12 - V1.3 - Diego Nunes Molinos
+%          - Atualização do termo grau para Título de Bacharel;
+%          - Inclusão da seção de Abstract;
+% ------------------------------------------------------------------------
+\documentclass{bsimc}
+%Não altere o comando seguinte. O título de seu trabalho será especificado mais adiante.
+\title{Observatório da Jornada do Paciente Oncológico}
+
+% ---
+% Pacotes fundamentais
+% ---
+% cmap omitido: fontenc já é carregado por bsimc.cls (abnTeX2)
+\usepackage{lmodern}				% Usa a fonte Latin Modern
+% Substituições para combinações bold+smallcaps inexistentes em Latin Modern
+\AtBeginDocument{%
+	\DeclareFontShape{T1}{lmr}{bx}{sc}{<->ssub*lmr/bx/n}{}%
+	\DeclareFontShape{T1}{lmss}{bx}{sc}{<->ssub*lmss/bx/n}{}%
+}
+\usepackage{makeidx}            	% Cria o indice
+\usepackage{lastpage}			% Usado pela Ficha catalográfica
+\usepackage{indentfirst}			% Indenta o primeiro parágrafo de cada seção.
+\usepackage{nomencl} 			% Lista de simbolos
+\usepackage{graphicx}			% Inclusão de gráficos
+\usepackage{float}
+% ---
+
+% ---
+% Pacotes adicionais
+% ---
+\usepackage[printonlyused]{acronym}
+\usepackage[table]{xcolor}
+% ---
+
+% ---
+% Insira aqui os pacotes utilizados por você
+% ---
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{listings}
+\usepackage{textcomp}
+
+% Evita warning do hyperref com \uppercase nos títulos de apêndice/anexo (abnTeX2)
+\pdfstringdefDisableCommands{%
+	\def\uppercase#1{#1}%
+}
+
+% ---
+% Informações de dados para CAPA e FOLHA DE ROSTO
+% ---
+%
+% Título:
+%	1. Título em português
+%	2. Título em inglês
+\titulo{Observatório da Jornada do Paciente Oncológico: plataforma web pública para exploração de dados de tempo de espera no tratamento oncológico no SUS}{Observatory of the Oncology Patient Journey: a public web platform for exploring cancer treatment waiting-time data in Brazil's SUS}
+
+% Colocar aqui ate 5 palavras-chave do trabalho
+\keyword{visualização de dados}
+\keyword{saúde pública}
+\keyword{React}
+\keyword{Registro Hospitalar de Câncer}
+\keyword{transparência}
+
+%
+% Autor:
+%	1. Nome completo do autor
+%	2. Formato de nome para bibliografia
+\autor{Gustavo Montenegro Felici}{Felici, G. M.}
+% Cidade
+\local{Uberlândia - MG}
+%
+% Ano de defesa
+\date{2026}
+% Área de concentração da pesquisa
+\areaconcentracao{Sistemas de Informação}
+% Nome do orientador
+\orientador{Fernanda Santos}
+% Nome do coorientador, se houver
+%\coorientador{Nome completo do coorientador}
+% -
+
+
+% informações do PDF
+\hypersetup{
+	pdftitle={\imprimirtitulo},
+	pdfauthor={\imprimirautor},
+	pdfsubject={\imprimirpreambulo},
+%	pdfkeywords=\@resumokw,
+	pdfproducer={LaTeX with abnTeX2}, 	% producer of the document
+	colorlinks=true,       		% false: boxed links; true: colored links
+	linkcolor=black,          	% color of internal links
+	citecolor=black,        		% color of links to bibliography
+	filecolor=magenta,      		% color of file links
+	urlcolor=black,
+	bookmarksdepth=4
+}
+
+% ---
+% compila o indice
+% ---
+\makeindex
+% ---
+
+% ---
+% Compila a lista de abreviaturas e siglas
+% ---
+\makenomenclature
+% ---
+
+% ----
+% Início do documento
+% ----
+
+\begin{document}
+
+	% ----------------------------------------------------------
+	% ELEMENTOS PRÉ-TEXTUAIS
+	% ----------------------------------------------------------
+	\pretextual
+
+	% ---
+	% Insere Capa, Folha de rosto, Ficha catalográfica (se inserida)
+	% e folha de aprovação (se inserida).
+	% ---
+	\maketitle
+
+	% ---
+	% Dedicatória - obrigatório somente para TCC 2
+	% ---
+	\imprimirdedicatoria{Dedico este trabalho à minha família e a todas as pessoas que acreditam no papel da informação como instrumento de cuidado e cidadania.}
+	% ---
+
+	% ---
+	% Agradecimentos - obrigatório somente para TCC 2
+	% ---
+	\imprimiragradecimentos{
+		Agradeço à orientadora Fernanda Santos pelo acompanhamento e pelas orientações ao longo do desenvolvimento deste Relatório Técnico Profissional.
+		Agradeço também à Faculdade de Computação da Universidade Federal de Uberlândia e aos docentes do curso de Sistemas de Informação, cuja formação tornou possível a realização deste trabalho.
+		Por fim, agradeço à minha família e aos amigos pelo apoio constante durante a jornada acadêmica.
+	}
+	% ---
+
+	% ---
+	% Epígrafe - obrigatório somente para TCC 2
+	% ---
+	\imprimirepigrafe{
+		``Informação acessível é um passo necessário para decisões mais conscientes em saúde pública.''\\
+		(Autor)
+	}
+	% ---
+
+	% ---
+	% RESUMO - obrigatório somente para TCC 2
+	% ---
+
+	% Resumo em português
+	\begin{resumo}{}
+
+		Este Relatório Técnico Profissional apresenta o desenvolvimento do \textit{Observatório da Jornada do Paciente Oncológico}, uma plataforma web pública voltada à exploração de dados oficiais sobre o tempo decorrido entre o diagnóstico de câncer e o início do tratamento no \acs{SUS}. O objetivo geral foi disponibilizar, de forma acessível a gestores, profissionais de saúde, pesquisadores e cidadãos, indicadores derivados do \acs{IRHC} do \acs{INCA}, permitindo a comparação com o prazo normativo de sessenta dias previsto na Lei nº~12.732/2012, e capacitando esses públicos a extrair suas próprias interpretações e conclusões sobre os padrões observados. A solução foi implementada como aplicação de página única (\acs{SPA}) com React e Vite, precedida por um pipeline de pré-processamento em Node.js que transforma o arquivo \acs{CSV} do \acs{RHC} em agregados \acs{JSON} consumidos no navegador. A interface oferece painéis de indicadores, mapa por Unidade da Federação, recortes por variáveis sociodemográficas e clínicas, e filtros de perfil. Os resultados técnicos incluem a disponibilização de uma base agregada com 1.693.381 registros processados (1.258.486 com datas válidas para o cálculo do tempo de espera) e uma interface estática, sem autenticação, adequada à publicação pública. Conclui-se que a plataforma contribui para a transparência e para a análise exploratória dos dados, ampliando o acesso à informação oficial.
+
+	\end{resumo}
+
+    % Abstract (o argumento define as Keywords em inglês)
+	\begin{abstract}{Data visualization. Public health. React. Hospital Cancer Registry. Transparency.}
+
+		This Professional Technical Report presents the development of the \textit{Observatory of the Oncology Patient Journey}, a public web platform for exploring official data on the time between cancer diagnosis and treatment initiation in Brazil's Unified Health System (\acs{SUS}). The main goal was to make indicators derived from the Hospital Cancer Registry (\acs{IRHC}/\acs{INCA}) accessible to managers, health professionals, researchers, and citizens, enabling comparison with the sixty-day normative deadline established by Law No.~12.732/2012, and empowering these audiences to draw their own interpretations and conclusions about the observed patterns. The solution was implemented as a single-page application (\acs{SPA}) with React and Vite, preceded by a Node.js preprocessing pipeline that transforms the \acs{RHC} \acs{CSV} file into \acs{JSON} aggregates consumed in the browser. The interface provides indicator panels, a state-level map, sociodemographic and clinical breakdowns, and profile filters. Technical results include an aggregated dataset of 1,693,381 processed records (1,258,486 with valid dates for waiting-time calculation) and a static, authentication-free interface suitable for public release. The platform contributes to transparency and exploratory analysis, expanding access to official information.
+
+	\end{abstract}
+
+	% ---
+	% inserir lista de ilustrações
+	% ---
+	\listailustracoes
+	% ---
+
+	% ---
+	% inserir lista de tabelas
+	% ---
+	\listatabelas
+	% ---
+
+	% ---
+	% inserir lista de abreviaturas e siglas
+	% ---
+	\listasiglas{abrev/Abreviaturas}
+	% ---
+
+   	% IA Generativa
+	\begin{IA-Generativa}{}
+
+	De acordo com o Código de Conduta para pessoas autoras de publicações da Sociedade Brasileira de Computação (SBC), Parte II, Art. 2º, inciso III:
+
+        \textit{III – Uso de Inteligência Artificial (IA) Generativa: a utilização de ferramentas e tecnologias de IA Generativa para geração de conteúdos, na escrita e/ou revisão do conteúdo de artigos, deve ser declarada explicitamente no trabalho. A declaração pode ocorrer na Seção de Agradecimentos, na metodologia ou em uma seção definida especificamente para este fim, de acordo com o template adotado, e deve listar as ferramentas e descrever onde foram empregadas, por exemplo, textos, tabelas, gráficos, citações, etc. Essas ferramentas não podem ser listadas como autores de um artigo. O uso de tais ferramentas não exime os autores da responsabilidade sobre todo o seu conteúdo, inclusive no caso de ser identificado plágio.}
+
+       \noindent O manual completo encontra-se disponível em: \url{https://sol.sbc.org.br/index.php/indice/conduta}
+
+       \vspace{1em}
+       \noindent Neste trabalho, ferramentas de Inteligência Artificial Generativa (assistente Cursor com modelo Grok) foram utilizadas para apoio na redação e organização textual dos capítulos em \LaTeX{}, na estruturação de seções a partir da análise do código-fonte da aplicação React e na elaboração de entradas bibliográficas preliminares. A revisão técnica, a validação dos dados apresentados e a responsabilidade pelo conteúdo final são do autor.
+
+	\end{IA-Generativa}
+
+	% ---
+	% inserir o sumario
+	% ---
+	\sumario
+	% ---
+
+	% ----------------------------------------------------------
+	% ELEMENTOS TEXTUAIS
+	% ----------------------------------------------------------
+	\mainmatter
+
+
+	% ----------------------------------------------------------
+	% Introdução
+	% ----------------------------------------------------------
+	\include{cap_introducao/introducao}
+
+
+	% ----------------------------------------------------------
+	% Fundamentação Prática
+	% ----------------------------------------------------------
+	\include{cap_fundamentacao/fundamentacao}
+
+	% ----------------------------------------------------------
+	% Metodologia de Solução Técnica
+	% Obrigatório somente para TCC 2
+	% ----------------------------------------------------------
+	\include{cap_estudo/estudo}
+
+        % ----------------------------------------------------------
+	% Projeto, Implementação e Validação da Solução
+	% Obrigatório somente para TCC 2
+	% ----------------------------------------------------------
+	%\include{cap_projeto/projeto}
+
+        % ----------------------------------------------------------
+	% Resultados
+	% Obrigatório somente para TCC 2
+	% ----------------------------------------------------------
+	%\include{cap_resultados/resultados}
+
+	% ---
+	% Finaliza a parte no bookmark do PDF, para que se inicie o bookmark na raiz
+	% ---
+	\bookmarksetup{startatroot}
+	% ---
+
+	% ---
+	% Conclusão
+	% Obrigatório somente para TCC 2
+	% ---
+	\include{cap_conclusao/conclusao}
+	% ----------------------------------------------------------
+	% ELEMENTOS PÓS-TEXTUAIS
+	% ----------------------------------------------------------
+	\postextual
+
+	% ----------------------------------------------------------
+	% Referências bibliográficas
+	% ----------------------------------------------------------
+	\bibliography{bib/modelo-referencias}
+
+	% ----------------------------------------------------------
+	% Glossário - opcional
+	% ----------------------------------------------------------
+	%
+	%\glossary
+
+	% ----------------------------------------------------------
+	% Apêndices  - opcional
+	% O apêndice de demonstração do abnTeX2 foi removido para evitar
+	% citações indefinidas e reduzir o tempo de compilação.
+	% ----------------------------------------------------------
+	%\begin{apendicesenv}
+	%	\partapendices
+	%	\include{apendices/abntex2-modelo-include-comandos}
+	%\end{apendicesenv}
+
+	% ----------------------------------------------------------
+	% Anexos  - opcional
+	% ----------------------------------------------------------
+	\begin{anexosenv}
+		\partanexos
+		\chapter{Termo de Ciência e Concordância}
+		Documento que atesta a ciência e a concordância da pessoa responsável na empresa em que o discente trabalha ou trabalhou com a publicação deste texto no Repositório Institucional.
+
+		{\color{blue}É necessária a assinatura do documento, com data atualizada, do(a) responsável no Termo de Ciência e Concordância para a publicação do texto do TCC no Repositório Institucional. Baixe o arquivo .docx contido na pasta \texttt{apendices}, preencha e peça a assinatura para incluir o documento aqui. Obs.: este texto deve ser removido na versão final.}
+
+		% Descomente após incluir o PDF assinado:
+		% \includepdf{apendices/termo-ciencia-empresa-final.pdf}
+
+	\end{anexosenv}
+
+
+\end{document}
